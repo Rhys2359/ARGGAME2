@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>服务查询｜白页旧物社</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="baiye-site baiye-query-page">
+  <!-- 查询页沿用官网头部，但页面气质更冷静、系统化。 -->
+  <header class="baiye-site-header">
+    <a class="baiye-logo" href="baiye.html">
+      <strong>白页旧物社</strong>
+      <span>旧物回收 / 古董寄卖 / 遗物整理 / 隐私清理</span>
+    </a>
+    <nav class="baiye-site-nav" aria-label="白页旧物社官网导航">
+      <a href="baiye.html">首页</a>
+      <a href="baiye.html#weekly-items">本周旧物</a>
+      <a href="baiye.html#services">服务项目</a>
+      <a class="active" href="baiye-query.html">服务查询</a>
+      <a href="baiye.html#contact">联系我们</a>
+    </nav>
+  </header>
+
+  <main class="query-page-main">
+    <section class="query-panel">
+      <p class="section-label">SERVICE QUERY</p>
+      <h1>服务查询</h1>
+      <p>请输入整理编号 / 服务单号，查询对应服务进度。</p>
+
+      <!-- 查询逻辑写在 script.js 中，便于初学者统一查看交互。 -->
+      <div class="real-query-form">
+        <input type="text" id="realQueryInput" placeholder="请输入整理编号 / 服务单号" autocomplete="off">
+        <button id="realQueryButton">查询</button>
+      </div>
+      <div class="real-query-result" id="realQueryResult" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="baiye-footer">
+    <p>© 2021 白页旧物社 版权所有　京ICP备 20210316号</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

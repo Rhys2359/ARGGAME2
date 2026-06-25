@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="360" viewBox="0 0 560 360" role="img" aria-labelledby="title desc">
+  <title id="title">童年生日照片占位图</title>
+  <desc id="desc">一张可替换的童年生日照片占位图，角落写着 1998/11/10。</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ead7bc"/>
+      <stop offset="1" stop-color="#b98f6c"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.16"/>
+      </feComponentTransfer>
+      <feBlend mode="multiply" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <rect width="560" height="360" fill="url(#paper)"/>
+  <rect x="18" y="18" width="524" height="324" rx="6" fill="#dfc6a4" opacity="0.72"/>
+  <g filter="url(#grain)">
+    <rect width="560" height="360" fill="#d2b48c" opacity="0.28"/>
+  </g>
+
+  <!-- 背景里的照相馆和饰品摊，后续你可以直接替换成真实图片。 -->
+  <rect x="52" y="58" width="190" height="210" rx="8" fill="#8f684d" opacity="0.7"/>
+  <rect x="78" y="86" width="136" height="92" rx="4" fill="#d8c1a0" opacity="0.82"/>
+  <text x="96" y="139" fill="#74503a" font-size="18" font-family="serif">照相馆</text>
+  <rect x="300" y="84" width="190" height="118" rx="8" fill="#9d7358" opacity="0.72"/>
+  <text x="335" y="151" fill="#f3ddbe" font-size="18" font-family="serif">饰品摊</text>
+  <circle cx="374" cy="183" r="10" fill="#f2d36b" opacity="0.75"/>
+  <circle cx="402" cy="183" r="10" fill="#d9ebff" opacity="0.7"/>
+  <circle cx="430" cy="183" r="10" fill="#f0a6a6" opacity="0.7"/>
+
+  <!-- 一群孩子的剪影。中间戴“伪宝石项链”的孩子作为后续身份锚点。 -->
+  <g opacity="0.9">
+    <circle cx="148" cy="234" r="22" fill="#5c4335"/>
+    <rect x="126" y="256" width="44" height="58" rx="18" fill="#6f4c3c"/>
+
+    <circle cx="222" cy="226" r="23" fill="#4f3d34"/>
+    <rect x="198" y="249" width="48" height="64" rx="18" fill="#7c5a46"/>
+
+    <circle cx="290" cy="220" r="25" fill="#47362f"/>
+    <rect x="264" y="246" width="52" height="72" rx="18" fill="#76513f"/>
+    <path d="M276 256 C286 274 298 274 308 256" fill="none" stroke="#d6e8ff" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="292" cy="272" r="7" fill="#9ed1ff" stroke="#f7f4db" stroke-width="2"/>
+
+    <circle cx="362" cy="232" r="22" fill="#604738"/>
+    <rect x="340" y="254" width="44" height="60" rx="18" fill="#85614c"/>
+
+    <circle cx="430" cy="238" r="21" fill="#503e35"/>
+    <rect x="410" y="260" width="42" height="56" rx="18" fill="#6e5143"/>
+  </g>
+
+  <rect x="360" y="298" width="156" height="28" rx="3" fill="#22170f" opacity="0.45"/>
+  <text x="374" y="318" fill="#f4e6ca" font-size="18" font-family="Menlo, Consolas, monospace">1998/11/10</text>
+</svg>

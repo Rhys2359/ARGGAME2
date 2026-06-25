@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小禾的电脑</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="desktop-page">
+  <!-- 模拟电脑桌面 -->
+  <main class="desktop" aria-label="小禾的电脑桌面">
+    <!-- 顶部菜单栏：模拟 Mac 桌面的系统状态区 -->
+    <header class="mac-menubar" aria-label="Mac 顶部菜单栏">
+      <div class="mac-menu-left">
+        <span class="apple-mark">●</span>
+        <strong>Finder</strong>
+        <span>文件</span>
+        <span>编辑</span>
+        <span>显示</span>
+        <span>前往</span>
+      </div>
+      <div class="mac-menu-right">
+        <span>Wi‑Fi</span>
+        <span>电量 73%</span>
+        <time class="desktop-time">2021/03/22&nbsp;&nbsp;22:41</time>
+      </div>
+    </header>
+
+    <!-- 桌面图标：像 Mac 一样靠右排列，点击后打开对应窗口。 -->
+    <section class="desktop-icons" aria-label="桌面图标">
+      <button class="desktop-icon" data-app="微信" id="wechatDesktopIcon"><span class="icon-image wechat-icon">微</span><span>微信</span></button>
+      <button class="desktop-icon" data-app="浏览器" id="browserDesktopIcon"><span class="icon-image browser-icon">◎</span><span>浏览器</span></button>
+      <button class="desktop-icon" data-app="邮箱" id="mailDesktopIcon"><span class="icon-image mail-icon">✉</span><span>邮箱</span></button>
+      <button class="desktop-icon" data-app="下载文件夹" id="downloadsDesktopIcon"><span class="icon-image folder-icon">▰</span><span>下载文件夹</span></button>
+      <button class="desktop-icon" data-app="抖音" id="douyinDesktopIcon"><span class="icon-image douyin-icon">♪</span><span>抖音</span></button>
+      <button class="desktop-icon" data-app="我的电脑"><span class="icon-image computer-icon">▣</span><span>我的电脑</span></button>
+      <button class="desktop-icon" data-app="回收站" id="recycleDesktopIcon"><span class="icon-image trash-icon">♲</span><span>回收站</span></button>
+      <button class="desktop-icon" data-app="备忘录"><span class="icon-image note-icon">▤</span><span>备忘录</span></button>
+    </section>
+
+    <!-- 底部 Dock：常用应用也可以从这里打开，更接近 Mac 的操作习惯 -->
+    <footer class="taskbar mac-dock" aria-label="Mac Dock">
+      <button class="dock-item" data-dock-app="Finder" aria-label="Finder">☻</button>
+      <button class="dock-item" data-dock-app="微信" aria-label="微信">微</button>
+      <button class="dock-item" data-dock-app="浏览器" aria-label="浏览器">◎</button>
+      <button class="dock-item" data-dock-app="邮箱" aria-label="邮箱">✉</button>
+      <button class="dock-item" data-dock-app="下载文件夹" aria-label="下载文件夹">▰</button>
+      <button class="dock-item" data-dock-app="抖音" aria-label="抖音">♪</button>
+      <button class="dock-item" data-dock-app="备忘录" aria-label="备忘录">▤</button>
+      <span class="dock-divider"></span>
+      <button class="dock-item dock-trash" data-dock-app="回收站" aria-label="回收站">♲</button>
+    </footer>
+
+    <!-- 今日待办便签：邮件线索会把新任务追加到这里。 -->
+    <aside class="memo-note" id="memoNote" aria-label="今日待办便签">
+      <h2>今日待办</h2>
+      <ul id="memoTaskList">
+        <li>✔ 论文格式修改</li>
+        <li>✔ 下午跑步</li>
+        <li>✔ 课程资料整理</li>
+        <li>✔ 给导师回邮件</li>
+        <li>□ 回复小禾消息</li>
+        <li>□ 找到图片缓存</li>
+        <li>□ 查找镜子来源</li>
+      </ul>
+    </aside>
+
+    <!-- 童年生日照片占位卡：用于邮箱密码谜题，后续可替换成真实图片。 -->
+    <aside class="birthday-photo-card" aria-label="童年生日照片">
+      <img src="assets/images/childhood-birthday.svg" alt="童年生日照片占位图">
+      <p>右下角拍摄日期：1998/11/10</p>
+      <p class="ending-photo-note" id="endingPhotoNote" hidden>照片说明：戴伪宝石项链的孩子，被短暂标记为吴晗。</p>
+    </aside>
+
+    <!-- 进入桌面后由 JavaScript 显示的微信消息 -->
+    <aside class="wechat-message" id="wechatMessage" aria-live="polite">
+      <div class="message-app-icon">微</div>
+      <div>
+        <strong>微信</strong>
+        <p>你现在方便吗？我联系不上小禾了。</p>
+      </div>
+      <button class="close-message" id="closeMessage" aria-label="关闭消息">×</button>
+    </aside>
+
+    <!-- 微信窗口：默认隐藏，点击微信图标或新消息后打开 -->
+    <section class="wechat-window" id="wechatWindow" aria-label="微信聊天窗口" aria-hidden="true">
+      <!-- 微信最左侧功能栏：参考电脑微信的竖向图标栏。 -->
+      <aside class="wechat-app-rail" aria-label="微信功能栏">
+        <div class="wechat-user-avatar">禾</div>
+        <button class="wechat-rail-icon active" type="button" aria-label="聊天">●</button>
+        <button class="wechat-rail-icon" type="button" aria-label="通讯录">☷</button>
+        <button class="wechat-rail-icon" type="button" aria-label="收藏">◇</button>
+        <button class="wechat-rail-icon" type="button" aria-label="小程序">◎</button>
+        <button class="wechat-rail-icon rail-bottom" type="button" aria-label="手机">▯</button>
+        <button class="wechat-rail-icon" type="button" aria-label="菜单">☰</button>
+      </aside>
+
+      <!-- 左侧联系人区域 -->
+      <aside class="wechat-sidebar">
+        <div class="wechat-search-row">
+          <div class="wechat-search-box">⌕　搜索</div>
+          <button class="wechat-add-button" type="button" aria-label="添加">＋</button>
+        </div>
+        <button class="contact-item active" data-contact="xiaohe">
+          <span class="contact-avatar xiaohe-avatar">禾</span>
+          <span class="contact-info"><strong>远声传媒-小禾</strong><small>图片已被清理，无法查看</small></span>
+          <time>3/22</time>
+        </button>
+        <button class="contact-item" data-contact="achuan">
+          <span class="contact-avatar boyfriend-avatar">川</span>
+          <span class="contact-info"><strong>阿川</strong><small>你看到这篇了吗？</small></span>
+          <time>09:28</time>
+        </button>
+        <button class="contact-item" data-contact="senior">
+          <span class="contact-avatar senior-avatar">林</span>
+          <span class="contact-info"><strong>林师兄</strong><small>日主就是辛。</small></span>
+          <time>3/15</time>
+        </button>
+        <button class="contact-item" data-contact="class">
+          <span class="contact-avatar class-avatar">群</span>
+          <span class="contact-info"><strong>班级群</strong><small>[链接] 某传媒女主播直播事故</small></span>
+          <time>09:46</time>
+        </button>
+        <button class="contact-item" data-contact="transfer">
+          <span class="contact-avatar xiaohe-avatar">禾</span>
+          <span class="contact-info"><strong>文件传输助手</strong><small>课程资料整理.docx</small></span>
+          <time>昨天</time>
+        </button>
+      </aside>
+
+      <!-- 右侧聊天内容区域 -->
+      <section class="chat-area">
+        <header class="chat-header">
+          <div class="mac-window-controls" aria-hidden="true">
+            <span class="mac-close-dot"></span>
+            <span class="mac-min-dot"></span>
+            <span class="mac-max-dot"></span>
+          </div>
+          <strong id="chatTitle">远声传媒-小禾</strong>
+          <div class="wechat-chat-actions" aria-hidden="true">
+            <span>💬</span>
+            <span>⌄</span>
+            <span>☎</span>
+            <span>···</span>
+          </div>
+          <button class="wechat-close-button" id="wechatCloseButton" aria-label="关闭微信窗口">×</button>
+        </header>
+
+        <!-- 远声传媒-小禾聊天：玩家尝试回复会失败 -->
+        <div class="chat-history active" id="xiaoheChat">
+          <p class="chat-time">3 月 16 日 23:48</p>
+          <div class="chat-message-row"><span class="chat-avatar xiaohe-avatar">禾</span><div><span class="chat-sender">小禾</span><div class="chat-bubble">你睡了吗？</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar xiaohe-avatar">禾</span><div><span class="chat-sender">小禾</span><div class="chat-bubble">我刚下播，今天有个东西有点怪。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar xiaohe-avatar">禾</span><div><span class="chat-sender">小禾</span><div class="image-failed-box">图片已被清理，无法查看</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar xiaohe-avatar">禾</span><div><span class="chat-sender">小禾</span><div class="chat-bubble">你不是学考古的吗？<br>帮我看看这个背后刻的是什么字？</div></div></div>
+          <div class="chat-message-row self"><div class="chat-bubble self-bubble">晚点看。</div></div>
+          <p class="chat-time">3 月 22 日 12:22</p>
+          <div class="wechat-reply-box">
+            <div class="wechat-input-tools" aria-hidden="true">
+              <span>☺</span>
+              <span>□</span>
+              <span>▭</span>
+              <span>✂</span>
+              <span>🎙</span>
+            </div>
+            <textarea id="wechatReplyInput" placeholder="输入消息"></textarea>
+            <button id="wechatSendButton">发送</button>
+          </div>
+          <p class="wechat-send-error" id="wechatSendError"></p>
+        </div>
+
+        <!-- 阿川聊天：新闻入口 -->
+        <div class="chat-history" id="achuanChat">
+          <p class="chat-time">3 月 22 日 09:28</p>
+          <div class="chat-message-row">
+            <span class="chat-avatar boyfriend-avatar">男</span>
+            <div>
+              <span class="chat-sender">阿川</span>
+              <div class="chat-bubble">
+                你最近有联系过小禾吗？<br>
+                我已经好几天联系不上她了。
+              </div>
+            </div>
+          </div>
+          <div class="chat-message-row">
+            <span class="chat-avatar boyfriend-avatar">男</span>
+            <div>
+              <span class="chat-sender">阿川</span>
+              <div class="chat-bubble">
+                你看到这篇了吗？我觉得说的是她。
+                <!-- 链接卡片是本地模拟新闻，不会跳转到真实网页。 -->
+                <button class="chat-news-card chat-news-button" id="wechatNewsCard" type="button">
+                  <span>新闻</span>
+                  <strong>《某传媒旗下女主播直播事故后停更，镜中疑似无脸画面引热议》</strong>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 林师兄聊天：埋四柱、日柱、辛酉逻辑 -->
+        <div class="chat-history" id="seniorChat">
+          <p class="chat-time">3 月 15 日</p>
+          <div class="chat-message-row"><span class="chat-avatar senior-avatar">林</span><div><span class="chat-sender">林师兄</span><div class="chat-bubble">你上次问的干支编号，我查了一下。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar senior-avatar">林</span><div><span class="chat-sender">林师兄</span><div class="chat-bubble">如果是四组，一般按年、月、日、时看。</div></div></div>
+          <div class="chat-message-row self"><div class="chat-bubble self-bubble">那怎么确定关键是哪一组？</div></div>
+          <div class="chat-message-row"><span class="chat-avatar senior-avatar">林</span><div><span class="chat-sender">林师兄</span><div class="chat-bubble">四柱里日柱最重要。<br>年记来处，月记所在，日记其身，时记归处。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar senior-avatar">林</span><div><span class="chat-sender">林师兄</span><div class="chat-bubble">如果只是举例，比如你看到的是“己丑 / 庚申 / 辛酉 / 癸亥”，第三组就是日柱。</div></div></div>
+          <div class="chat-message-row self"><div class="chat-bubble self-bubble">所以是辛酉？</div></div>
+          <div class="chat-message-row"><span class="chat-avatar senior-avatar">林</span><div><span class="chat-sender">林师兄</span><div class="chat-bubble">对。<br>日主就是辛。</div></div></div>
+        </div>
+
+        <!-- 班级群聊天：新闻入口 -->
+        <div class="chat-history" id="classChat">
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">群</span><div><span class="chat-sender">班长</span><div class="chat-bubble">明天论文格式统一按模板改一下。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">A</span><div><span class="chat-sender">同学A</span><div class="chat-bubble">谁下午去跑步？</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">B</span><div><span class="chat-sender">同学B</span><div class="chat-bubble">你们看到那个旧物主播新闻了吗？</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">B</span><div><span class="chat-sender">同学B</span><div class="chat-bubble"><button class="chat-news-card chat-news-button" id="classNewsCard" type="button"><span>新闻</span><strong>《某传媒旗下女主播直播事故后停更，镜中疑似无脸画面引热议》</strong></button></div></div></div>
+        </div>
+
+        <!-- 文件传输助手 -->
+        <div class="chat-history" id="transferChat">
+          <p class="chat-time">3 月 15 日</p>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">文</span><div><span class="chat-sender">文件传输助手</span><div class="chat-bubble">课程资料整理.docx<br>论文格式模板.pdf</div></div></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- 抖音主页窗口：用于发现小禾主页上的商务邮箱 -->
+    <section class="douyin-window" id="douyinWindow" aria-label="抖音主页窗口" aria-hidden="true">
+      <header class="window-header">
+        <div class="mac-window-controls" aria-hidden="true">
+          <span class="mac-close-dot"></span>
+          <span class="mac-min-dot"></span>
+          <span class="mac-max-dot"></span>
+        </div>
+        <strong>抖音</strong>
+        <button class="window-close-button" id="douyinCloseButton" aria-label="关闭抖音窗口">×</button>
+      </header>
+      <div class="douyin-profile">
+        <div class="douyin-profile-top">
+          <div class="douyin-avatar">禾</div>
+          <div>
+            <h2>小禾</h2>
+            <p>远声传媒旗下主播 / 旧物盲盒合作</p>
+            <p class="douyin-id">抖音号：xiaohe0316</p>
+          </div>
+        </div>
+        <div class="douyin-bio">
+          <p>商务合作请联系主页邮箱：</p>
+          <button class="profile-email" id="profileEmailButton">xiaohejiuwu@mail.com</button>
+          <small>最近更新：2021/03/16 23:39　部分公开视频不可见</small>
+        </div>
+        <div class="douyin-video-grid">
+          <article><span>旧物盲盒预告</span></article>
+          <article><span>已隐藏</span></article>
+          <article class="glitch-card"><span>00:17</span></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 邮箱窗口：用于查看旧物盲盒合作相关邮件证据 -->
+    <section class="mail-window" id="mailWindow" aria-label="邮箱窗口" aria-hidden="true">
+      <header class="window-header">
+        <div class="mac-window-controls" aria-hidden="true">
+          <span class="mac-close-dot"></span>
+          <span class="mac-min-dot"></span>
+          <span class="mac-max-dot"></span>
+        </div>
+        <strong>邮箱</strong>
+        <button class="window-close-button" id="mailCloseButton" aria-label="关闭邮箱窗口">×</button>
+      </header>
+
+      <!-- 邮箱登录层：主线需要先从抖音主页找到邮箱，再登录查看合作邮件。 -->
+      <div class="mail-login-panel" id="mailLoginPanel">
+        <h2>邮箱登录</h2>
+        <p>请输入小禾商务邮箱账号与密码。</p>
+        <input type="text" id="mailLoginInput" placeholder="请输入邮箱账号" autocomplete="off">
+        <input type="password" id="mailPasswordInput" placeholder="请输入密码" autocomplete="off">
+        <p class="mail-password-hint">密码提示：🎂</p>
+        <button id="mailLoginButton">登录</button>
+        <p class="mail-login-error" id="mailLoginError" aria-live="polite"></p>
+        <small>商务合作邮箱：xiaohejiuwu@mail.com<br>密码提示：🎂</small>
+      </div>
+
+      <div class="mail-layout" id="mailLayout" hidden>
+        <!-- 左侧邮件文件夹 -->
+        <aside class="mail-sidebar">
+          <button class="mail-folder active">收件箱</button>
+          <button class="mail-folder">已发送</button>
+          <button class="mail-folder">草稿箱</button>
+          <button class="mail-folder">垃圾箱</button>
+          <button class="mail-folder">归档</button>
+        </aside>
+
+        <!-- 中间邮件列表 -->
+        <section class="mail-list" id="mailList" aria-label="收件箱邮件列表"></section>
+
+        <!-- 右侧邮件详情，内容由 JavaScript 根据所选邮件填入 -->
+        <article class="mail-detail" id="mailDetail" aria-live="polite"></article>
+      </div>
+    </section>
+
+    <!-- 回收站窗口：用于查看被删除但尚未彻底清除的线索文件 -->
+    <section class="recycle-window" id="recycleWindow" aria-label="回收站窗口" aria-hidden="true">
+      <header class="window-header">
+        <div class="mac-window-controls" aria-hidden="true">
+          <span class="mac-close-dot"></span>
+          <span class="mac-min-dot"></span>
+          <span class="mac-max-dot"></span>
+        </div>
+        <strong>回收站</strong>
+        <button class="window-close-button" id="recycleCloseButton" aria-label="关闭回收站窗口">×</button>
+      </header>
+
+      <div class="recycle-layout">
+        <!-- 左侧是被删除文件列表。 -->
+        <section class="recycle-file-list" id="recycleFileList" aria-label="被删除项目列表"></section>
+
+        <!-- 右侧是文件预览面板。 -->
+        <article class="recycle-file-detail file-preview-panel" id="recycleFileDetail" aria-live="polite">
+          <p class="empty-preview">选择一个被删除项目以查看内容。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 下载文件夹窗口：初始只显示三个普通文件 -->
+    <section class="folder-window" id="folderWindow" aria-label="下载文件夹" aria-hidden="true">
+      <header class="window-header">
+        <div class="mac-window-controls" aria-hidden="true">
+          <span class="mac-close-dot"></span>
+          <span class="mac-min-dot"></span>
+          <span class="mac-max-dot"></span>
+        </div>
+        <strong>下载文件夹</strong>
+        <button class="window-close-button" id="folderCloseButton" aria-label="关闭下载文件夹">×</button>
+      </header>
+      <div class="folder-content">
+        <p class="folder-path">Macintosh HD &gt; 用户 &gt; 小禾 &gt; 下载文件夹</p>
+        <div class="file-list">
+          <button class="file-item"><span class="file-symbol doc-symbol">▤</span><span>课程资料整理.docx</span></button>
+          <button class="file-item"><span class="file-symbol pdf-symbol">▤</span><span>论文格式说明.pdf</span></button>
+          <button class="file-item" id="imageCacheInfoFile"><span class="file-symbol doc-symbol">▤</span><span>图片缓存说明.txt</span></button>
+
+          <!-- 旧版 zip 解锁分支已从主线隐藏；保留代码兼容旧测试，不再显示入口。 -->
+          <button class="file-item zip-file" id="mirrorZipFile" hidden><span class="file-symbol">▣</span><span>0316_镜子.zip</span></button>
+          <button class="file-item extracted-file" id="damagedMirrorFile" hidden><span class="file-symbol image-symbol">▧</span><span>铜镜照片_损坏.png</span></button>
+          <button class="file-item extracted-file" id="liveScreenshotFile" hidden><span class="file-symbol image-symbol">▧</span><span>直播截图_0316.png</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 解压密码输入窗口 -->
+    <section class="password-window" id="passwordWindow" aria-label="请输入解压密码" aria-hidden="true">
+      <header class="window-header">
+        <div class="mac-window-controls" aria-hidden="true">
+          <span class="mac-close-dot"></span>
+          <span class="mac-min-dot"></span>
+          <span class="mac-max-dot"></span>
+        </div>
+        <strong>请输入解压密码</strong>
+        <button class="window-close-button" id="passwordCloseButton" aria-label="关闭密码窗口">×</button>
+      </header>
+      <div class="password-content">
+        <input type="text" id="passwordInput" placeholder="输入压缩包密码" autocomplete="off">
+        <p class="password-error" id="passwordError" aria-live="polite"></p>
+        <div class="dialog-buttons">
+          <button class="dialog-button confirm-button" id="passwordConfirmButton">确认</button>
+          <button class="dialog-button" id="passwordCancelButton">取消</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 图片查看窗口：内容由 JavaScript 根据所点文件切换 -->
+    <section class="image-viewer-window" id="imageViewerWindow" aria-label="图片查看窗口" aria-hidden="true">
+      <header class="window-header">
+        <div class="mac-window-controls" aria-hidden="true">
+          <span class="mac-close-dot"></span>
+          <span class="mac-min-dot"></span>
+          <span class="mac-max-dot"></span>
+        </div>
+        <strong id="imageViewerTitle">图片查看</strong>
+        <button class="window-close-button" id="imageViewerCloseButton" aria-label="关闭图片查看窗口">×</button>
+      </header>
+      <div class="image-viewer-content">
+        <div class="damaged-image-placeholder" id="imagePlaceholder"></div>
+        <p class="image-description" id="imageDescription"></p>
+      </div>
+    </section>
+
+    <!-- 浏览器窗口：所有页面均为本地模拟，不会访问真实网络 -->
+    <section class="browser-window" id="browserWindow" aria-label="浏览器窗口" aria-hidden="true">
+      <header class="browser-topbar">
+        <!-- Chrome 风格顶部：左侧保留 Mac 三色控制点，中间是标签页与地址栏 -->
+        <div class="mac-window-controls browser-controls" aria-hidden="true">
+          <span class="mac-close-dot"></span>
+          <span class="mac-min-dot"></span>
+          <span class="mac-max-dot"></span>
+        </div>
+        <div class="chrome-tab">搜索 - Google</div>
+        <div class="chrome-toolbar">
+          <button class="chrome-nav-button" type="button" aria-label="后退">‹</button>
+          <button class="chrome-nav-button" type="button" aria-label="前进">›</button>
+          <button class="chrome-nav-button" type="button" aria-label="刷新">↻</button>
+          <input class="address-bar" id="addressBar" value="https://search.local" readonly aria-label="地址栏">
+        </div>
+        <button class="window-close-button" id="browserCloseButton" aria-label="关闭浏览器窗口">×</button>
+      </header>
+
+      <!-- 默认搜索页面 -->
+      <section class="browser-page search-page active" id="searchPage">
+        <div class="search-page-content">
+          <!-- 本地模拟 Google 搜索首页，不会连接真实网络 -->
+          <h1 class="google-logo" aria-label="Google">
+            <span class="google-blue">G</span><span class="google-red">o</span><span class="google-yellow">o</span><span class="google-blue">g</span><span class="google-green">l</span><span class="google-red">e</span>
+          </h1>
+          <div class="search-form">
+            <input type="text" id="siteSearchInput" placeholder="输入关键词" autocomplete="off">
+            <button id="siteSearchButton">搜索</button>
+          </div>
+          <!-- 搜索记录：由 JavaScript 自动生成，点击记录可再次搜索。 -->
+          <div class="search-history" id="searchHistory" aria-label="搜索记录"></div>
+          <p class="google-hint">试试搜索：白页旧物社、无接触旧物、铜镜、小禾</p>
+          <div class="search-results" id="searchResults" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- 点击第一条搜索结果后显示的白页旧物社官网 -->
+      <section class="browser-page baiye-page" id="baiyePage">
+        <!-- 白页官网顶部导航：点击“服务查询”进入编号查询页。 -->
+        <nav class="baiye-nav" aria-label="白页旧物社导航">
+          <button class="baiye-nav-link active" data-baiye-section="home">首页</button>
+          <button class="baiye-nav-link" data-baiye-section="home">服务项目</button>
+          <button class="baiye-nav-link" data-baiye-section="home">合作案例</button>
+          <button class="baiye-nav-link" data-baiye-section="query">服务查询</button>
+          <button class="baiye-nav-link" data-baiye-section="home">联系我们</button>
+        </nav>
+
+        <!-- 17/40 官网首页 -->
+        <div class="baiye-section active" id="baiyeHomeSection">
+          <div class="baiye-hero">
+            <p class="baiye-mark">BAIYE / EST. 2021</p>
+            <h1>白页旧物社</h1>
+            <p>替你清理不想留下的痕迹。</p>
+          </div>
+          <div class="service-cards">
+            <article class="service-card"><span>01</span><h2>旧物整理</h2><p>分类、清点与无接触交接。</p></article>
+            <article class="service-card"><span>02</span><h2>古董寄卖</h2><p>旧物估价与匿名寄送服务。</p></article>
+            <article class="service-card"><span>03</span><h2>隐私清理</h2><p>整理不愿留下的个人痕迹。</p></article>
+            <article class="service-card"><span>04</span><h2>数字痕迹清除</h2><p>协助归档散落的线上记录。</p></article>
+          </div>
+          <p class="business-note">我们支持无接触旧物交接、远程估价、直播合作寄送与个人信息痕迹整理。</p>
+        </div>
+
+        <!-- 20/40 白页编号查询页 -->
+        <section class="case-query baiye-section" id="baiyeQuerySection">
+          <h2>服务查询</h2>
+          <div class="query-form">
+            <input type="text" id="caseQueryInput" placeholder="请输入整理编号 / 服务单号" autocomplete="off">
+            <button id="caseQueryButton">查询</button>
+          </div>
+          <div class="case-result" id="caseResult" aria-live="polite"></div>
+        </section>
+
+        <!-- 21/40 白页隐藏档案页：只有在服务查询页输入 archive/007 才会显示。 -->
+        <section class="archive-record-page baiye-section" id="baiyeArchiveSection">
+          <p class="archive-label">INTERNAL ARCHIVE / PARTIAL ACCESS</p>
+          <h2>白页整理服务 #007</h2>
+          <div class="archive-basic">
+            状态：清理中<br>
+            关联对象：小禾<br>
+            归档权限：部分开放
+          </div>
+          <button class="archive-more-button" id="archiveMoreButton">展开更多记录</button>
+          <div class="archive-more" id="archiveMoreInfo" hidden>
+            关联编号：FACE-004<br>
+            交接方式：3号仓 / 无接触<br>
+            备注：部分熟人连接未清除。
+          </div>
+        </section>
+      </section>
+
+      <!-- 搜索结果中的普通资料页：内容由 JavaScript 依照所点结果填入 -->
+      <section class="browser-page fake-result-page" id="fakeResultPage">
+        <div class="fake-page-content">
+          <button class="back-search-button" id="backToSearchButton">← 返回搜索结果</button>
+          <p class="fake-page-label">本地资料索引</p>
+          <h1 id="fakePageTitle"></h1>
+          <div class="fake-page-body" id="fakePageBody"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- 点击图标后的临时提示 -->
+    <p class="desktop-tip" id="desktopTip" aria-live="polite"></p>
+
+    <!-- 第一章桌面收束演出：白页结局触发后回到桌面才显示。 -->
+    <section class="desktop-ending-overlay" id="desktopEndingOverlay" hidden aria-live="polite">
+      <div class="wechat-recovery-message" id="wechatRecoveryMessage">
+        <strong id="endingWechatContact">远声传媒-小禾</strong>
+        <div id="endingWechatLines"></div>
+      </div>
+      <div class="whitefox-ending-flash" id="whitefoxEndingFlash" hidden>
+        <p>白狐残影检测：稳定。</p>
+        <p>遮面者干扰：持续存在。</p>
+        <strong>辛金不碎，只是蒙尘。</strong>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试入口</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="horror-test-page">
+  <!-- 恐怖元素测试页：不使用图片、音频或外部资源，只测试文字墙演出。 -->
+  <main class="horror-text-wall" id="horrorTextWall" aria-label="恐怖文字测试区域"></main>
+
+  <!-- 系统采集日志：只是 ARG 演出，不读取任何真实个人信息。 -->
+  <section class="horror-capture-log" id="horrorCaptureLog" aria-live="polite">
+    <strong id="horrorLogTitle"></strong>
+    <div class="horror-log-lines" id="horrorLogLines"></div>
+  </section>
+
+  <!-- 纯 CSS 做出的屏幕噪点与扫描线，不使用图片。 -->
+  <div class="horror-screen-noise" aria-hidden="true"></div>
+
+  <!-- 最终阶段大字：16 秒后由 JavaScript 显示。 -->
+  <div class="horror-final-message" aria-hidden="true">
+    <strong>008 信息已采集</strong>
+    <span id="horrorFinalRegion"></span>
+    <em class="final-record-paused" id="finalRecordPaused" hidden>第一章记录已暂停。</em>
+  </div>
+
+  <!-- 保证玩家始终可以离开测试页。 -->
+  <a class="horror-back-link" id="horrorBackLink" href="baiye.html">返回官网</a>
+
+  <script src="script.js"></script>
+</body>
+</html>
