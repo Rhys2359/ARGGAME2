@@ -4299,6 +4299,18 @@ body {
   letter-spacing: 1px;
 }
 
+.chapter-ending-type {
+  display: inline-block;
+  margin: 0 0 10px !important;
+  padding: 4px 10px;
+  border: 1px solid rgba(94, 34, 34, 0.22);
+  border-radius: 999px;
+  background: rgba(94, 34, 34, 0.08);
+  color: #7b2d2d !important;
+  font-size: 12px !important;
+  letter-spacing: 0.12em;
+}
+
 .chapter-ending-card p {
   color: #4d574f;
   font-size: 16px;
@@ -4821,4 +4833,134 @@ body {
 .mutual-slogan small {
   color: #918879;
   letter-spacing: 0.16em;
+}
+
+/* ========== 第一章结束后：桌面状态、二周目复查、第二章钩子 ========== */
+.chapter-one-status-card,
+.review-clues-card,
+.chapter-two-hook-card {
+  position: absolute;
+  z-index: 6;
+  width: 250px;
+  padding: 15px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 18px;
+  background: rgba(21, 27, 42, 0.68);
+  color: #f8f4ec;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px) saturate(1.2);
+}
+
+.chapter-one-status-card[hidden],
+.review-clues-card[hidden],
+.chapter-two-hook-card[hidden] {
+  display: none;
+}
+
+.chapter-one-status-card {
+  top: 58px;
+  left: 26px;
+}
+
+.review-clues-card {
+  top: 238px;
+  left: 26px;
+}
+
+.chapter-two-hook-card {
+  left: 260px;
+  bottom: 118px;
+  width: 300px;
+  border-color: rgba(255, 222, 170, 0.36);
+  background: rgba(45, 33, 50, 0.66);
+}
+
+.status-label {
+  margin: 0 0 8px;
+  color: rgba(255, 224, 170, 0.82);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+
+.chapter-one-status-card h2,
+.chapter-two-hook-card h2 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+
+.chapter-one-status-card p,
+.chapter-two-hook-card p,
+.chapter-two-hook-card small {
+  display: block;
+  margin: 6px 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.chapter-two-hook-card strong {
+  display: block;
+  margin: 8px 0;
+  color: #ffe0aa;
+  font-size: 14px;
+}
+
+.review-clues-card button {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  text-align: left;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.review-clues-card button:hover {
+  background: rgba(255, 224, 170, 0.22);
+}
+
+.chapter-one-complete .desktop-time::after {
+  content: "  / OBS-008";
+  color: #ffe0aa;
+}
+
+.staff-ending-banner,
+.chapter-two-staff-hook {
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(126, 38, 38, 0.26);
+  border-radius: 14px;
+  background: rgba(126, 38, 38, 0.07);
+  color: #49342f;
+}
+
+.staff-ending-banner[hidden],
+.chapter-two-staff-hook[hidden] {
+  display: none;
+}
+
+.staff-ending-banner strong,
+.chapter-two-staff-hook strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #812f2f;
+}
+
+.staff-ending-banner p,
+.chapter-two-staff-hook p {
+  margin: 4px 0;
+}
+
+.dark-record-area .chapter-two-staff-hook {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ddd6cf;
+}
+
+.dark-record-area .chapter-two-staff-hook strong {
+  color: #ffb4a6;
 }

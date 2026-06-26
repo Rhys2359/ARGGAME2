@@ -65,6 +65,33 @@
       </ul>
     </aside>
 
+    <!-- 第一章结束后的桌面状态：玩家返回桌面或二周目复查时可见。 -->
+    <aside class="chapter-one-status-card" id="chapterOneStatusCard" hidden aria-label="第一章状态">
+      <p class="status-label">CHAPTER 01</p>
+      <h2>归档中断</h2>
+      <p>FACE-004 启用暂停。</p>
+      <p>OBS-008 已生成。</p>
+      <p>白狐仍在镜前。</p>
+    </aside>
+
+    <!-- 第一章结束后的复查线索面板：不推进第二章，只给玩家重新检查的入口。 -->
+    <aside class="review-clues-card" id="reviewCluesCard" hidden aria-label="二周目复查线索">
+      <p class="status-label">复查线索</p>
+      <button data-review-action="wechat" type="button">复查微信：小禾 / 班级群</button>
+      <button data-review-action="mail" type="button">复查邮箱：同步失败邮件</button>
+      <button data-review-action="browser" type="button">复查搜索：白页互助会</button>
+      <button data-review-action="baiye" type="button">复查白页后台：OBS-008</button>
+    </aside>
+
+    <!-- 第二章钩子：只作为提示，不展开第二章正式剧情。 -->
+    <aside class="chapter-two-hook-card" id="chapterTwoHookCard" hidden aria-label="第二章钩子">
+      <p class="status-label">NEXT</p>
+      <h2>第二章线索待确认</h2>
+      <p>白页后台出现新的同步提示：</p>
+      <strong>OBS-008 / 命主反应待确认</strong>
+      <small>请复查“白页互助会”和观测记录。</small>
+    </aside>
+
     <!-- 童年生日照片占位卡：用于邮箱密码谜题，后续可替换成真实图片。 -->
     <aside class="birthday-photo-card" aria-label="童年生日照片">
       <img src="assets/images/childhood-birthday.svg" alt="童年生日照片占位图">

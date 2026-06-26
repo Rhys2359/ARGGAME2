@@ -158,6 +158,11 @@ document.addEventListener("DOMContentLoaded", function () {
   var endingWechatLines = document.getElementById("endingWechatLines");
   var endingPhotoNote = document.getElementById("endingPhotoNote");
   var whitefoxEndingFlash = document.getElementById("whitefoxEndingFlash");
+  var chapterOneStatusCard = document.getElementById("chapterOneStatusCard");
+  var reviewCluesCard = document.getElementById("reviewCluesCard");
+  var chapterTwoHookCard = document.getElementById("chapterTwoHookCard");
+  var staffEndingBanner = document.getElementById("staffEndingBanner");
+  var chapterTwoStaffHook = document.getElementById("chapterTwoStaffHook");
   var filesExtracted = false;
   var mailLoggedIn = false;
   var discoveredProfileEmail = "xiaohejiuwu@mail.com";
@@ -793,6 +798,61 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.log("待办进度暂时无法读取。");
     }
+  }
+
+  // 第一章完成状态：标准结局进入 OBS-008 后写入，供桌面、白页后台和二周目复查读取。
+  function markChapterOneComplete() {
+    try {
+      localStorage.setItem("xinjinChapterOneComplete", "true");
+      localStorage.setItem("xinjinTodoStage", "interrupted");
+      localStorage.setItem("xinjinSystemMailUnlocked", "true");
+      localStorage.setItem("xinjinDesktopEndingPending", "true");
+    } catch (error) {
+      console.log("第一章完成状态暂时无法写入。");
+    }
+  }
+
+  // 根据本地记录恢复第一章结束后的界面状态：刷新页面或二周目复查时也能看到。
+  function applyChapterOneCompleteState() {
+    var isComplete = false;
+
+    try {
+      isComplete = localStorage.getItem("xinjinChapterOneComplete") === "true";
+    } catch (error) {
+      isComplete = false;
+    }
+
+    if (!isComplete) return;
+
+    document.body.classList.add("chapter-one-complete");
+    gameState.coreItemSelected = true;
+    gameState.correctCoreItem = true;
+    gameState.face004Interrupted = true;
+
+    if (chapterOneStatusCard) chapterOneStatusCard.hidden = false;
+    if (reviewCluesCard) reviewCluesCard.hidden = false;
+    if (chapterTwoHookCard) chapterTwoHookCard.hidden = false;
+    if (endingPhotoNote) endingPhotoNote.hidden = false;
+
+    if (staffEndingBanner) staffEndingBanner.hidden = false;
+    if (chapterTwoStaffHook) chapterTwoStaffHook.hidden = false;
+
+    if (activationOldItemStatus) activationOldItemStatus.textContent = "核心留物已确认";
+    if (activationMaskStatus) activationMaskStatus.textContent = "已确认";
+    if (activationHandoverStatus) activationHandoverStatus.textContent = "暂停";
+    if (activationFinalHint) activationFinalHint.textContent = "FACE-004 启用条件不满足。";
+    if (activationMaskHint) activationMaskHint.textContent = "遮面者干扰持续存在。";
+
+    if (faceSummaryCoreItem) faceSummaryCoreItem.textContent = "伪宝石项链";
+    if (faceSummaryStatus) faceSummaryStatus.textContent = "启用中断 / 待复核";
+    if (faceSummaryHandoverTime) faceSummaryHandoverTime.textContent = "23:40 已暂停";
+    if (faceSummaryHint) faceSummaryHint.textContent = "核心留物已确认。归零交接暂时中断。";
+
+    if (obs008LatestAction) obs008LatestAction.textContent = "阻止 FACE-004 启用";
+    if (obs008RiskNote) obs008RiskNote.textContent = "命主反应待确认";
+
+    updateTodoStage("interrupted");
+    checkSystemFailureMailUnlock();
   }
 
   // 第一章结局后回到桌面：播放小禾账号短暂恢复、照片标记与白狐伏笔。
@@ -1595,6 +1655,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function startObsSyncEnding() {
     if (!obsSyncPanel || !obsSyncLines) return;
 
+    markChapterOneComplete();
     chapterEndingPanel.hidden = true;
     obsSyncPanel.hidden = false;
     obsSyncLines.innerHTML = "";
@@ -1666,6 +1727,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var fromEnding = params.get("from") === "ending";
 
     if (fromEnding) {
+      markChapterOneComplete();
       document.body.classList.add("ending-horror-mode");
       if (horrorBackLink) {
         horrorBackLink.textContent = "返回调查桌面";
@@ -2062,6 +2124,26 @@ document.addEventListener("DOMContentLoaded", function () {
     filePreviewCloseButton.addEventListener("click", closeWechatFilePreview);
   }
 
+  // 第一章结束后二周目复查入口：帮助玩家快速回看关键线索，不开启第二章正式剧情。
+  document.querySelectorAll("[data-review-action]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var action = button.dataset.reviewAction;
+
+      if (action === "wechat") {
+        openWechat();
+        switchChat("xiaohe");
+      } else if (action === "mail") {
+        openMail();
+      } else if (action === "browser") {
+        openBrowser();
+        siteSearchInput.value = "旧名归白页";
+        searchSite();
+      } else if (action === "baiye") {
+        window.open("baiye.html", "_blank");
+      }
+    });
+  });
+
   if (wechatSendButton) {
     wechatSendButton.addEventListener("click", sendWechatReply);
     wechatReplyInput.addEventListener("keydown", function (event) {
@@ -2369,6 +2451,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 进入桌面时读取其他页面写入的主线进度，刷新今日待办。
   applyStoredTodoStage();
+  applyChapterOneCompleteState();
   checkSystemFailureMailUnlock();
   startDesktopEndingEcho();
 
