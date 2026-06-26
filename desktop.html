@@ -118,7 +118,7 @@
         </button>
         <button class="contact-item" data-contact="class">
           <span class="contact-avatar class-avatar">群</span>
-          <span class="contact-info"><strong>班级群</strong><small>[链接] 某传媒女主播直播事故</small></span>
+          <span class="contact-info"><strong>班级群</strong><small>论文模板记得看群文件</small></span>
           <time>09:46</time>
         </button>
         <button class="contact-item" data-contact="transfer">
@@ -210,20 +210,52 @@
           <div class="chat-message-row"><span class="chat-avatar senior-avatar">林</span><div><span class="chat-sender">林师兄</span><div class="chat-bubble">对。<br>日主就是辛。</div></div></div>
         </div>
 
-        <!-- 班级群聊天：新闻入口 -->
+        <!-- 班级群聊天：普通群聊里自然混入新闻入口。 -->
         <div class="chat-history" id="classChat">
-          <div class="chat-message-row"><span class="chat-avatar class-avatar">群</span><div><span class="chat-sender">班长</span><div class="chat-bubble">明天论文格式统一按模板改一下。</div></div></div>
-          <div class="chat-message-row"><span class="chat-avatar class-avatar">A</span><div><span class="chat-sender">同学A</span><div class="chat-bubble">谁下午去跑步？</div></div></div>
-          <div class="chat-message-row"><span class="chat-avatar class-avatar">B</span><div><span class="chat-sender">同学B</span><div class="chat-bubble">你们看到那个旧物主播新闻了吗？</div></div></div>
-          <div class="chat-message-row"><span class="chat-avatar class-avatar">B</span><div><span class="chat-sender">同学B</span><div class="chat-bubble"><button class="chat-news-card chat-news-button" id="classNewsCard" type="button"><span>新闻</span><strong>《某传媒旗下女主播直播事故后停更，镜中疑似无脸画面引热议》</strong></button></div></div></div>
+          <p class="chat-time">民俗资料整理小组（17）　09:46</p>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">周</span><div><span class="chat-sender">班长-周沫</span><div class="chat-bubble">论文格式模板我发群文件了，大家今晚别忘了改。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">泽</span><div><span class="chat-sender">阿泽</span><div class="chat-bubble">谁下午跑步？我再不动真的废了。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">刘</span><div><span class="chat-sender">刘可</span><div class="chat-bubble">导师刚刚又补了一版课程资料……</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">陈</span><div><span class="chat-sender">小陈</span><div class="chat-bubble">别说了，我现在看到“格式统一”四个字就头疼。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">猫</span><div><span class="chat-sender">猫不理</span><div class="chat-bubble">你们看到那个旧物主播新闻了吗？有点邪门。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">泽</span><div><span class="chat-sender">阿泽</span><div class="chat-bubble">哪个？</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">猫</span><div><span class="chat-sender">猫不理</span><div class="chat-bubble"><button class="chat-news-card chat-news-button" id="classNewsCard" type="button"><span>链接</span><strong>某传媒旗下女主播直播事故后停更，镜中疑似无脸画面引热议</strong></button></div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">陈</span><div><span class="chat-sender">小陈</span><div class="chat-bubble">又是营销吧？</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">林</span><div><span class="chat-sender">林师兄</span><div class="chat-bubble">旧物直播那个？我刷到过切片，镜子背面好像有刻字。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">刘</span><div><span class="chat-sender">刘可</span><div class="chat-bubble">真的假的？别吓人。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">泽</span><div><span class="chat-sender">阿泽</span><div class="chat-bubble">我觉得是滤镜 bug。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">猫</span><div><span class="chat-sender">猫不理</span><div class="chat-bubble">可是回放都没了。</div></div></div>
+          <div class="chat-message-row"><span class="chat-avatar class-avatar">周</span><div><span class="chat-sender">班长-周沫</span><div class="chat-bubble">先别聊了，论文模板记得看群文件。</div></div></div>
         </div>
 
-        <!-- 文件传输助手 -->
+        <!-- 文件传输助手：像真实微信一样显示文件卡片，点击后弹出预览。 -->
         <div class="chat-history" id="transferChat">
           <p class="chat-time">3 月 15 日</p>
-          <div class="chat-message-row"><span class="chat-avatar class-avatar">文</span><div><span class="chat-sender">文件传输助手</span><div class="chat-bubble">课程资料整理.docx<br>论文格式模板.pdf</div></div></div>
+          <div class="chat-message-row">
+            <span class="chat-avatar class-avatar">文</span>
+            <div>
+              <span class="chat-sender">文件传输助手</span>
+              <button class="wechat-file-card" data-preview-file="course" type="button">
+                <span class="wechat-file-icon">DOC</span>
+                <span><strong>课程资料整理.docx</strong><small>26 KB　Word 文档</small></span>
+              </button>
+              <button class="wechat-file-card" data-preview-file="paper" type="button">
+                <span class="wechat-file-icon pdf">PDF</span>
+                <span><strong>论文格式模板.pdf</strong><small>18 KB　PDF 文档</small></span>
+              </button>
+            </div>
+          </div>
         </div>
       </section>
+    </section>
+
+    <!-- 微信文件预览弹窗：用于查看文件传输助手里的普通学习资料。 -->
+    <section class="file-preview-modal" id="filePreviewModal" hidden aria-live="polite">
+      <div class="file-preview-card">
+        <button class="window-close-button file-preview-close" id="filePreviewCloseButton" aria-label="关闭文件预览">×</button>
+        <h2 id="filePreviewTitle">文件预览</h2>
+        <div class="file-preview-body" id="filePreviewBody"></div>
+      </div>
     </section>
 
     <!-- 抖音主页窗口：用于发现小禾主页上的商务邮箱 -->
@@ -274,13 +306,11 @@
       <!-- 邮箱登录层：主线需要先从抖音主页找到邮箱，再登录查看合作邮件。 -->
       <div class="mail-login-panel" id="mailLoginPanel">
         <h2>邮箱登录</h2>
-        <p>请输入小禾商务邮箱账号与密码。</p>
+        <p>请输入邮箱账号与密码。</p>
         <input type="text" id="mailLoginInput" placeholder="请输入邮箱账号" autocomplete="off">
         <input type="password" id="mailPasswordInput" placeholder="请输入密码" autocomplete="off">
-        <p class="mail-password-hint">密码提示：🎂</p>
         <button id="mailLoginButton">登录</button>
         <p class="mail-login-error" id="mailLoginError" aria-live="polite"></p>
-        <small>商务合作邮箱：xiaohejiuwu@mail.com<br>密码提示：🎂</small>
       </div>
 
       <div class="mail-layout" id="mailLayout" hidden>

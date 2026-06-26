@@ -43,6 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var profileEmailButton = document.getElementById("profileEmailButton");
   var wechatNewsCard = document.getElementById("wechatNewsCard");
   var classNewsCard = document.getElementById("classNewsCard");
+  var filePreviewModal = document.getElementById("filePreviewModal");
+  var filePreviewCloseButton = document.getElementById("filePreviewCloseButton");
+  var filePreviewTitle = document.getElementById("filePreviewTitle");
+  var filePreviewBody = document.getElementById("filePreviewBody");
   var mailDesktopIcon = document.getElementById("mailDesktopIcon");
   var mailWindow = document.getElementById("mailWindow");
   var mailCloseButton = document.getElementById("mailCloseButton");
@@ -91,6 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var baiyeObjectSearchButton = document.getElementById("baiyeObjectSearchButton");
   var baiyeObjectResult = document.getElementById("baiyeObjectResult");
   var staffLogLink = document.getElementById("staffLogLink");
+  var internalEntryButton = document.getElementById("internalEntryButton");
   var staffLogPanel = document.getElementById("staffLogPanel");
   var staffLogInput = document.getElementById("staffLogInput");
   var staffLogButton = document.getElementById("staffLogButton");
@@ -156,6 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var filesExtracted = false;
   var mailLoggedIn = false;
   var discoveredProfileEmail = "xiaohejiuwu@mail.com";
+  var mailLoginFailedOnce = false;
   var browserSearchHistory = loadBrowserSearchHistory();
   var pendingCoreItem = null;
   var gameState = {
@@ -170,6 +176,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 邮箱邮件数据：统一写在这里，方便后续继续添加新邮件。
   var mailMessages = [
+    {
+      id: "mail-2",
+      sender: "小禾旧物 / 商务邮箱",
+      receiver: "白页旧物社 客服中心",
+      subject: "Re: 旧物盲盒直播素材清单",
+      time: "2021/03/16 12:41",
+      body: [
+        "您好，",
+        "素材箱已收到。",
+        "外封条完整，箱体编号显示为：",
+        "BY-0316-007",
+        "今晚直播会按建议顺序展示。",
+        "另外，箱内有轻微金属撞击声，请确认是否正常。",
+        "小禾旧物"
+      ]
+    },
     {
       id: "mail-1",
       sender: "白页旧物社 客服中心",
@@ -190,40 +212,26 @@ document.addEventListener("DOMContentLoaded", function () {
       ],
       attachment: "旧物素材清单_0316.pdf",
       todoStage: "mail-clue"
-    },
-    {
-      id: "mail-2",
-      sender: "小禾旧物 / 商务邮箱",
-      receiver: "白页旧物社 客服中心",
-      subject: "Re: 旧物盲盒直播素材清单",
-      time: "2021/03/16 12:41",
-      body: [
-        "您好，",
-        "素材箱已收到。",
-        "外封条完整，箱体编号显示为：",
-        "BY-0316-007",
-        "今晚直播会按建议顺序展示。",
-        "另外，箱内有轻微金属撞击声，请确认是否正常。",
-        "小禾旧物"
-      ]
-    },
-    {
-      id: "mail-3",
-      sender: "系统通知",
-      receiver: "小禾旧物 / 商务邮箱",
-      subject: "部分邮件同步失败",
-      time: "2021/03/22 23:40",
-      body: [
-        "同步异常。",
-        "以下关键词相关邮件可能无法完整显示：",
-        "小禾\n白页旧物社\n#007\n铜镜\n吴晗",
-        "错误原因：",
-        "远程归档状态发生变化。\n部分熟人连接正在重新整理。",
-        "请稍后重试。"
-      ],
-      isError: true
     }
   ];
+
+  // 系统通知邮件默认不出现，玩家看到 archive/007 隐藏档案后才解锁。
+  var systemFailureMail = {
+    id: "mail-3",
+    sender: "系统通知",
+    receiver: "小禾旧物 / 商务邮箱",
+    subject: "部分邮件同步失败",
+    time: "2021/03/22 23:40",
+    body: [
+      "同步异常。",
+      "以下关键词相关邮件可能无法完整显示：",
+      "小禾\n白页旧物社\n#007\n铜镜\n吴晗",
+      "错误原因：",
+      "远程归档状态发生变化。\n部分熟人连接正在重新整理。",
+      "请稍后重试。"
+    ],
+    isError: true
+  };
 
   // 回收站文件数据：这里保存被删除文件的预览内容与恢复状态。
   var recycleFiles = [
@@ -335,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
       xiaohe: "远声传媒-小禾",
       achuan: "阿川",
       senior: "林师兄",
-      class: "班级群",
+      class: "民俗资料整理小组（17）",
       transfer: "文件传输助手"
     };
 
@@ -418,6 +426,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 统一显示桌面下方的系统提示。
   function showDesktopTip(message) {
+    if (!desktopTip) return;
     desktopTip.textContent = message;
     desktopTip.classList.add("show");
     window.setTimeout(function () {
@@ -429,6 +438,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function openMail() {
     if (!mailWindow) return;
 
+    checkSystemFailureMailUnlock();
     mailWindow.classList.add("show");
     mailWindow.setAttribute("aria-hidden", "false");
     bringToFront(mailWindow);
@@ -466,10 +476,75 @@ document.addEventListener("DOMContentLoaded", function () {
     douyinWindow.setAttribute("aria-hidden", "true");
   }
 
+  // 检查系统通知邮件是否已经被隐藏档案解锁，避免一开始就暴露“吴晗”。
+  function checkSystemFailureMailUnlock() {
+    var shouldUnlock = false;
+
+    try {
+      shouldUnlock = localStorage.getItem("xinjinSystemMailUnlocked") === "true";
+    } catch (error) {
+      shouldUnlock = false;
+    }
+
+    var alreadyAdded = mailMessages.some(function (mail) {
+      return mail.id === systemFailureMail.id;
+    });
+
+    if (shouldUnlock && !alreadyAdded) {
+      mailMessages.unshift(systemFailureMail);
+      showDesktopTip("小禾商务邮箱　新邮件：部分邮件同步失败");
+    }
+  }
+
+  // 当玩家真正看到 archive/007 的隐藏记录后，解锁系统通知邮件。
+  function unlockSystemFailureMail() {
+    try {
+      localStorage.setItem("xinjinSystemMailUnlocked", "true");
+    } catch (error) {
+      console.log("系统通知邮件解锁状态暂时无法保存。");
+    }
+    checkSystemFailureMailUnlock();
+  }
+
   // 点击新闻卡片：打开模拟浏览器里的新闻资讯页，引导玩家去看短视频主页。
   function openNewsFromWechat() {
     openBrowser();
     showNewsPage("xiaohe");
+  }
+
+  // 文件传输助手预览：只展示普通学习资料，让伏笔藏在“镜类器物”段落里。
+  function openWechatFilePreview(fileType) {
+    if (!filePreviewModal || !filePreviewTitle || !filePreviewBody) return;
+
+    if (fileType === "course") {
+      filePreviewTitle.textContent = "课程资料整理.docx";
+      filePreviewBody.innerHTML =
+        '<h3>课程资料整理</h3>' +
+        '<p>课程：民俗物质文化研究</p>' +
+        '<p>本周整理内容：</p>' +
+        '<ol>' +
+          '<li>镜、梳、簪、盒等随身旧物的民俗含义</li>' +
+          '<li>旧物与身份记忆的关系</li>' +
+          '<li>照面器物在民间故事中的禁忌</li>' +
+        '</ol>' +
+        '<p>备注：</p>' +
+        '<p>镜类器物常被视为“照形”与“照名”的媒介。部分地区认为，长时间对镜会造成“影滞”。</p>';
+    } else {
+      filePreviewTitle.textContent = "论文格式模板.pdf";
+      filePreviewBody.innerHTML =
+        '<h3>论文格式模板</h3>' +
+        '<p>标题：黑体三号，居中</p>' +
+        '<p>正文：宋体小四，1.5 倍行距</p>' +
+        '<p>注释：页下注</p>' +
+        '<p>参考文献：按作者、年份、书名排列</p>' +
+        '<p>提交时间：3 月 24 日 18:00 前</p>';
+    }
+
+    filePreviewModal.hidden = false;
+  }
+
+  function closeWechatFilePreview() {
+    if (filePreviewModal) filePreviewModal.hidden = true;
   }
 
   // 邮箱登录：玩家需要先从抖音主页找到邮箱地址，再用童年生日照片里的日期作为密码。
@@ -479,10 +554,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (enteredEmail === discoveredProfileEmail && enteredPassword === "19981110") {
       mailLoggedIn = true;
+      checkSystemFailureMailUnlock();
       showMailInbox();
       showDesktopTip("已同步 " + mailMessages.length + " 封邮件。");
+    } else if (enteredEmail === discoveredProfileEmail) {
+      mailLoginError.innerHTML = "密码错误。<br>提示：🎂";
     } else {
-      mailLoginError.textContent = "账号或密码错误。";
+      mailLoginFailedOnce = true;
+      mailLoginError.innerHTML = "账号或密码错误。<br><span>请确认账号是否为公开商务邮箱。</span>";
     }
   }
 
@@ -1019,6 +1098,14 @@ document.addEventListener("DOMContentLoaded", function () {
       '<article class="search-result-item">' +
         '<button class="search-result-link" type="button">白页旧物社 2021 年无接触交接说明</button>' +
         '<p>支持远程估价、匿名寄送与临时仓交接。公开说明未包含具体客户信息。</p>' +
+      '</article>' +
+      '<article class="search-result-item">' +
+        '<button class="search-result-link" type="button">白页旧物社 服务评价</button>' +
+        '<p>有人称流程安静、交接迅速，也有人提到“归档后很难再查到原记录”。</p>' +
+      '</article>' +
+      '<article class="search-result-item">' +
+        '<button class="search-result-link" type="button">有人用过白页旧物社吗？——论坛结果</button>' +
+        '<p>论坛讨论已折叠部分回复。多数内容与旧物回收、遗物整理和隐私清理有关。</p>' +
       '</article>';
 
     document.getElementById("openBaiyeOfficial").addEventListener("click", function () {
@@ -1026,6 +1113,59 @@ document.addEventListener("DOMContentLoaded", function () {
       window.open("baiye.html", "_blank");
     });
     document.getElementById("openArchiveSnapshot").addEventListener("click", showArchive404);
+  }
+
+  // 搜索“小禾”时，先给出主页、新闻、切片删除等普通搜索结果。
+  function showXiaoheSearchResults() {
+    searchResults.innerHTML =
+      '<p class="result-count">约 14 / 40 条结果与“小禾”有关</p>' +
+      '<article class="search-result-item">' +
+        '<button class="search-result-link" id="openXiaoheProfileFromSearch" type="button">小禾旧物｜短视频主页</button>' +
+        '<p>旧物修复、旧物盲盒、商务合作信息。最近公开内容停留在 2021 年 3 月 16 日。</p>' +
+      '</article>' +
+      '<article class="search-result-item">' +
+        '<button class="search-result-link" id="openXiaoheNewsFromSearch" type="button">某传媒旗下女主播直播事故后停更，镜中疑似无脸画面引热议</button>' +
+        '<p>城市晚报 · 2021 年 3 月 22 日 06:42。事故与旧物盲盒直播、铜镜和删除切片有关。</p>' +
+      '</article>' +
+      '<article class="search-result-item">' +
+        '<button class="search-result-link" type="button">小禾旧物过往直播切片已删除</button>' +
+        '<p>多个网友保存链接已显示不存在，相关页面缓存不完整。</p>' +
+      '</article>';
+
+    document.getElementById("openXiaoheProfileFromSearch").addEventListener("click", function () {
+      openDouyin();
+    });
+    document.getElementById("openXiaoheNewsFromSearch").addEventListener("click", function () {
+      showNewsPage("xiaohe");
+    });
+  }
+
+  // 白页互助会搜索结果：看起来像普通互助组织，实际给出口令线索。
+  function showMutualSearchResults(type) {
+    var title = "白页互助会｜旧名归白页，新面得其所";
+    var summary = "给无法继续承担旧名的人，一个重新被看见的机会。";
+
+    if (type === "study") {
+      title = "白页互助会｜内部学习资料摘录";
+      summary = "名不应滞留。记忆若无人整理，便会腐坏。";
+    } else if (type === "oldname") {
+      summary = "请勿强行保留他人的旧名。";
+    }
+
+    searchResults.innerHTML =
+      '<p class="result-count">约 3 / 40 条结果与“白页互助会”有关</p>' +
+      '<article class="search-result-item">' +
+        '<button class="search-result-link" id="openBaiyeMutual" type="button">' + title + '</button>' +
+        '<p>' + summary + '</p>' +
+      '</article>' +
+      '<article class="search-result-item">' +
+        '<button class="search-result-link" type="button">匿名身份整理互助说明</button>' +
+        '<p>旧名减负、关系整理、公开身份过渡。页面内容仅供内部学习。</p>' +
+      '</article>';
+
+    document.getElementById("openBaiyeMutual").addEventListener("click", function () {
+      window.open("baiye-mutual.html", "_blank");
+    });
   }
 
   // 14/40：新闻资讯页。不同关键词会显示不同信息层级。
@@ -1060,11 +1200,21 @@ document.addEventListener("DOMContentLoaded", function () {
           '<div class="blur-live-shot">直播截图已压缩，画面模糊。</div>' +
           '<p class="shot-caption">画面中疑似出现一面旧铜镜，评论区有人留言：“她脸呢？”</p>' +
           '<div class="news-comments">' +
-            '<p><strong>旧城区收音机：</strong>我直播时看的时候不是这样的。刚开始只是有点模糊，后来镜子里的脸越来越淡。</p>' +
-            '<p><strong>今天也在整理旧物：</strong>有没有人注意到镜子背面？我暂停的时候看到好像刻着字。</p>' +
-            '<p><strong>南桥路口：</strong>回放和直播不一样，回放里脸更空。</p>' +
-            '<p><strong>夜行镜：</strong>有人截到镜子里有一张白色动物脸，我看着像狐狸。</p>' +
-            '<p><strong>旧城区收音机：</strong>别吓人，就是反光吧。</p>' +
+            '<p><strong>旧城区收音机：</strong>我当时在直播间，刚开始真不是这样，镜子里只是有点糊，后面脸越来越淡。</p>' +
+            '<p><strong>奶油别加糖：</strong>又开始都市传说营销了是吧，主播停更也能编。</p>' +
+            '<p><strong>南桥路口：</strong>我看的是回放，回放和直播不一样，直播里更吓人。</p>' +
+            '<p><strong>今天也在整理旧物：</strong>有人注意镜子背面吗？暂停的时候好像有字。</p>' +
+            '<p><strong>不想上班：</strong>评论区比新闻吓人。</p>' +
+            '<p><strong>夜行镜：</strong>我截图里看到一张白色动物脸，像狐狸，但我不确定。</p>' +
+            '<p><strong>用户已注销：</strong>别找了，切片已经没了。</p>' +
+            '<p><strong>小熊软糖：</strong>只有我觉得是滤镜 bug 吗？</p>' +
+            '<p><strong>旧物爱好者A：</strong>白页旧物社是不是经常找小主播合作？我好像刷到过。</p>' +
+            '<p><strong>匿名：</strong>别照镜子太久。</p>' +
+            '<p><strong>青柠水：</strong>这主播是不是叫小禾？我之前刷到过她修旧盒子的直播。</p>' +
+            '<p><strong>江边散步：</strong>楼上别乱说，新闻都没写名字。</p>' +
+            '<p><strong>一只电子猫：</strong>有没有可能就是公司炒作？</p>' +
+            '<p><strong>灰色毛衣：</strong>我保存过切片，刚才打开已经提示不存在了。</p>' +
+            '<p><strong>无名：</strong>镜子不是重点，重点是她后来没有影子。</p>' +
           '</div>' +
         '</div>'
     });
@@ -1104,10 +1254,18 @@ document.addEventListener("DOMContentLoaded", function () {
       showSearchNotice("搜索结果多为同名用户、旧论坛发言与无关通讯录碎片，未发现与直播事故相关的公开信息。");
     } else if (hasAllKeywords(compactKeyword, ["小禾", "真名"])) {
       showSearchNotice("多个营销号内容互相矛盾，无法确认真实姓名。请勿传播未经证实的个人信息。");
+    } else if (hasAnyKeyword(compactKeyword, ["我想有脸"])) {
+      showMutualSearchResults("slogan");
+    } else if (hasAnyKeyword(compactKeyword, ["面不应空置"])) {
+      showMutualSearchResults("study");
+    } else if (hasAnyKeyword(compactKeyword, ["旧名归白页"])) {
+      showMutualSearchResults("oldname");
     } else if (hasAnyKeyword(compactKeyword, ["白页旧物社", "白页", "白页官网", "旧物社", "baiye"])) {
       showBaiyeSearchResults();
     } else if (hasAllKeywords(compactKeyword, ["远声", "小禾"]) || hasAllKeywords(compactKeyword, ["小禾", "直播"]) || hasAllKeywords(compactKeyword, ["小禾", "事故"])) {
       showNewsPage("xiaohe");
+    } else if (hasAnyKeyword(compactKeyword, ["小禾"])) {
+      showXiaoheSearchResults();
     } else if (hasAllKeywords(compactKeyword, ["远声", "女主播"]) || hasAllKeywords(compactKeyword, ["远声", "铜镜"]) || hasAllKeywords(compactKeyword, ["女主播", "铜镜"])) {
       showNewsPage("company");
     } else if (hasAllKeywords(compactKeyword, ["0316", "事故"]) || hasAllKeywords(compactKeyword, ["0316", "直播"])) {
@@ -1210,10 +1368,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // 白页官网首页的旧物/商品检索：必须输入邮箱附件里的商品编号，才会出现仿古铜镜。
+  // 白页官网首页的旧物/商品检索：完整编号可直达，模糊词只给弱提示，避免绕过邮箱线索。
   function searchBaiyeObject() {
     var keyword = normalizeKeyword(baiyeObjectSearchInput.value.trim());
-    var matchedMirror = keyword === "by-ac-mr-0719";
+    var matchedMirror = ["by-ac-mr-0719", "by-ac-mr", "mr-0719", "0719", "无面铜镜"].indexOf(keyword) !== -1;
+    var weakMirrorKeyword = ["铜镜", "仿古铜镜", "镜子"].indexOf(keyword) !== -1;
 
     if (matchedMirror) {
       baiyeObjectResult.innerHTML =
@@ -1225,6 +1384,17 @@ document.addEventListener("DOMContentLoaded", function () {
           '<p>说明：仿古铜镜，旧物直播合作素材之一。建议最后展示。不建议长时间正面照人。</p>' +
           '<a href="baiye-query.html">查看归档服务</a>' +
         '</article>';
+    } else if (weakMirrorKeyword) {
+      baiyeObjectResult.innerHTML =
+        '<div class="real-query-message">' +
+          '<p>找到多条镜类旧物记录。</p>' +
+          '<p>请提供完整寄卖编号或服务编号以继续查询。</p>' +
+          '<ul class="baiye-fuzzy-list">' +
+            '<li>仿古铜镜 / 编号缺失 / 状态：已归档</li>' +
+            '<li>旧镜收纳盒 / 状态：可整理</li>' +
+            '<li>铜制装饰镜 / 状态：已下架</li>' +
+          '</ul>' +
+        '</div>';
     } else {
       baiyeObjectResult.innerHTML = '<p class="real-query-message">未找到相关旧物。该旧物可能已下架或归档。</p>';
     }
@@ -1237,7 +1407,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!keyword) {
       staffLogResult.textContent = "请输入内部口令。";
-    } else if (rawKeyword === "我想有脸") {
+    } else if (rawKeyword === "旧名归白页，新面得其所") {
       enableTemporaryStaffAccess();
     } else {
       staffLogResult.textContent = "口令错误。";
@@ -1882,6 +2052,16 @@ document.addEventListener("DOMContentLoaded", function () {
     classNewsCard.addEventListener("click", openNewsFromWechat);
   }
 
+  document.querySelectorAll(".wechat-file-card").forEach(function (button) {
+    button.addEventListener("click", function () {
+      openWechatFilePreview(button.dataset.previewFile);
+    });
+  });
+
+  if (filePreviewCloseButton) {
+    filePreviewCloseButton.addEventListener("click", closeWechatFilePreview);
+  }
+
   if (wechatSendButton) {
     wechatSendButton.addEventListener("click", sendWechatReply);
     wechatReplyInput.addEventListener("keydown", function (event) {
@@ -2006,6 +2186,7 @@ document.addEventListener("DOMContentLoaded", function () {
     archiveMoreButton.addEventListener("click", function () {
       archiveMoreInfo.hidden = false;
       updateTodoStage("face004");
+      unlockSystemFailureMail();
     });
 
     // Chrome 顶部按钮的简单模拟：后退回搜索页，刷新保持当前页，前进暂未开放。
@@ -2087,11 +2268,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // 白页官网的内部员工日志入口：默认隐藏，点击后展开。
+  function toggleStaffLogPanel() {
+    if (!staffLogPanel) return;
+    staffLogPanel.hidden = !staffLogPanel.hidden;
+    if (!staffLogPanel.hidden) staffLogInput.focus();
+  }
+
   if (staffLogLink) {
-    staffLogLink.addEventListener("click", function () {
-      staffLogPanel.hidden = !staffLogPanel.hidden;
-      if (!staffLogPanel.hidden) staffLogInput.focus();
-    });
+    staffLogLink.addEventListener("click", toggleStaffLogPanel);
+  }
+
+  if (internalEntryButton) {
+    internalEntryButton.addEventListener("click", toggleStaffLogPanel);
+  }
+
+  if (staffLogButton) {
     staffLogButton.addEventListener("click", searchStaffLog);
     staffLogInput.addEventListener("keydown", function (event) {
       if (event.key === "Enter") searchStaffLog();
@@ -2172,11 +2363,13 @@ document.addEventListener("DOMContentLoaded", function () {
   if (realArchiveMoreButton) {
     realArchiveMoreButton.addEventListener("click", function () {
       realArchiveMoreInfo.hidden = false;
+      unlockSystemFailureMail();
     });
   }
 
   // 进入桌面时读取其他页面写入的主线进度，刷新今日待办。
   applyStoredTodoStage();
+  checkSystemFailureMailUnlock();
   startDesktopEndingEcho();
 
   // 如果当前页面是 baiye-horror-test.html，就启动文字墙测试。

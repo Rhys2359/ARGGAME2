@@ -4474,3 +4474,351 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ========== 本轮体验修复：文字溢出、macOS 渐变桌面、按钮可读性 ========== */
+.desktop-page {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 190, 130, 0.82), transparent 32%),
+    radial-gradient(circle at 82% 28%, rgba(126, 139, 255, 0.76), transparent 36%),
+    radial-gradient(circle at 52% 78%, rgba(37, 88, 181, 0.84), transparent 46%),
+    linear-gradient(135deg, #1f2f72 0%, #7b5dd6 45%, #f2a15d 100%) !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+.desktop-icon span:last-child,
+.dock-item {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+.mail-item strong,
+.mail-sender,
+.contact-info strong,
+.contact-info small,
+.file-item span:last-child,
+.search-result-link,
+.storage-table td,
+.storage-table th,
+.face-table td,
+.face-table th {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-bubble,
+.mail-body,
+.mail-body p,
+.news-article-page p,
+.fake-page-body,
+.baiye-site p,
+.mutual-page p,
+.internal-modal-card,
+.file-preview-body {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.internal-modal-card,
+.staff-log-panel,
+.file-preview-card {
+  max-width: min(92vw, 720px);
+  max-height: min(86vh, 720px);
+  overflow-y: auto;
+}
+
+.storage-table,
+.face-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.storage-table td,
+.storage-table th,
+.face-table td,
+.face-table th {
+  min-width: 0;
+}
+
+.baiye-primary-button,
+.baiye-secondary-button,
+.baiye-object-search-form button,
+.query-panel button,
+.archive-expand-button,
+.return-desktop-button,
+.internal-entry-button {
+  color: #fff !important;
+  background: #26334f !important;
+  border: 1px solid rgba(38, 51, 79, 0.85) !important;
+}
+
+.baiye-secondary-button {
+  background: #6d2d2d !important;
+  border-color: #6d2d2d !important;
+}
+
+.baiye-primary-button:hover,
+.baiye-secondary-button:hover,
+.baiye-object-search-form button:hover,
+.query-panel button:hover,
+.archive-expand-button:hover,
+.return-desktop-button:hover,
+.internal-entry-button:hover {
+  color: #fff !important;
+  background: #8b2f2f !important;
+}
+
+/* 微信关闭按钮恢复为可见右上角，避免被 Mac 红点覆盖逻辑隐藏。 */
+.wechat-window .wechat-close-button {
+  top: 13px !important;
+  right: 14px !important;
+  left: auto !important;
+  width: 28px !important;
+  height: 28px !important;
+  opacity: 1 !important;
+  color: #555 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 50% !important;
+  transform: none !important;
+}
+
+.wechat-window .wechat-close-button:hover {
+  color: #fff !important;
+  background: #e45a4f !important;
+}
+
+/* 微信文件卡片与预览弹窗。 */
+.wechat-file-card {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: min(270px, 100%);
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px solid #e3e5e8;
+  border-radius: 8px;
+  background: #fff;
+  color: #202124;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wechat-file-card:hover {
+  background: #f7f8fa;
+}
+
+.wechat-file-card strong,
+.wechat-file-card small {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wechat-file-card small {
+  margin-top: 3px;
+  color: #8a8f98;
+  font-size: 12px;
+}
+
+.wechat-file-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 48px;
+  border-radius: 6px;
+  background: #3f7dd8;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.wechat-file-icon.pdf {
+  background: #c74747;
+}
+
+.file-preview-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.file-preview-modal[hidden] {
+  display: none;
+}
+
+.file-preview-card {
+  position: relative;
+  width: min(560px, calc(100vw - 42px));
+  padding: 26px;
+  border-radius: 16px;
+  background: #fff;
+  color: #222;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28);
+}
+
+.file-preview-close {
+  top: 14px !important;
+  right: 14px !important;
+  left: auto !important;
+  opacity: 1 !important;
+  color: #555 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  transform: none !important;
+}
+
+.file-preview-body {
+  color: #333;
+  line-height: 1.75;
+}
+
+/* 白页官网右上角内部入口。 */
+.baiye-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.internal-entry-button {
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.staff-log-link:hover,
+.internal-entry-button:hover {
+  color: #fff !important;
+}
+
+.staff-login-modal {
+  position: fixed !important;
+  left: 50% !important;
+  right: auto !important;
+  top: 50% !important;
+  bottom: auto !important;
+  z-index: 260 !important;
+  width: min(380px, calc(100vw - 38px)) !important;
+  transform: translate(-50%, -50%) !important;
+  border-color: rgba(105, 42, 42, 0.22) !important;
+  box-shadow: 0 28px 90px rgba(28, 25, 21, 0.28) !important;
+}
+
+.baiye-fuzzy-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #5f5a52;
+  line-height: 1.7;
+}
+
+/* 白页互助会：冷淡公益页面外壳。 */
+.mutual-page {
+  min-height: 100vh;
+  margin: 0;
+  background: #f5f1e8;
+  color: #2a2a28;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.mutual-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px clamp(22px, 6vw, 82px);
+  border-bottom: 1px solid rgba(70, 61, 49, 0.12);
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.mutual-header a {
+  color: #2b2b28;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mutual-header span {
+  color: #777064;
+  font-size: 13px;
+}
+
+.mutual-main {
+  width: min(980px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 54px 0 80px;
+}
+
+.mutual-hero {
+  padding: clamp(36px, 8vw, 76px);
+  border-radius: 28px;
+  background: linear-gradient(135deg, #fffdf8, #eee6d7);
+  box-shadow: 0 22px 70px rgba(70, 60, 40, 0.1);
+}
+
+.mutual-label {
+  color: #8b8172;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+}
+
+.mutual-hero h1 {
+  margin: 10px 0 16px;
+  font-family: "Songti SC", serif;
+  font-size: clamp(38px, 7vw, 68px);
+  font-weight: 500;
+}
+
+.mutual-section {
+  margin-top: 30px;
+  padding: 28px;
+  border: 1px solid rgba(70, 61, 49, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.mutual-section h2 {
+  margin-top: 0;
+  color: #3b352e;
+}
+
+.mutual-help-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.mutual-help-list li {
+  padding: 14px;
+  border-radius: 12px;
+  background: #f0eadf;
+  color: #4b443b;
+}
+
+.mutual-rules p:last-child {
+  color: #7b2f2f;
+}
+
+.mutual-slogan {
+  margin-top: 34px;
+  padding: 28px;
+  text-align: center;
+  color: #4b342f;
+}
+
+.mutual-slogan p {
+  margin: 0 0 10px;
+  font-size: clamp(24px, 4vw, 40px);
+  font-family: "Songti SC", serif;
+}
+
+.mutual-slogan small {
+  color: #918879;
+  letter-spacing: 0.16em;
+}
